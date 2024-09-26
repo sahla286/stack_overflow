@@ -9,23 +9,35 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self,validated_data):
         return User.objects.create_user(**self.validated_data)
-    
-class QuestionSerializer(serializers.ModelSerializer):
-    qus_ans=serializers.CharField(read_only=True)
-    user=serializers.CharField(read_only=True) 
-    datetime=serializers.CharField(read_only=True)
+
+class AnswerUserSerializer(serializers.ModelSerializer):
     class Meta:
-        model=Questions
-        fields='__all__'
+        model=User
+        fields=['username']
 
 class AnswerSerializer(serializers.ModelSerializer):
     user=serializers.CharField(read_only=True) 
     datetime=serializers.CharField(read_only=True)
     question=serializers.CharField(read_only=True)
-    upvote=serializers.CharField(read_only=True)
+    upvote=AnswerUserSerializer(read_only=True,many=True)
+    upvote_count=serializers.CharField(read_only=True)
     class Meta:
         model=Answers
         fields='__all__'
+
+
+    
+class QuestionSerializer(serializers.ModelSerializer):
+    qus_ans=AnswerSerializer(read_only=True,many=True)
+    user=serializers.CharField(read_only=True) 
+    datetime=serializers.CharField(read_only=True)
+    
+    class Meta:
+        model=Questions
+        fields='__all__'
+
+
+
     
 
         

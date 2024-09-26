@@ -9,6 +9,7 @@ router=DefaultRouter()
 router.register('users',views.UserView,basename='users')
 router.register('question',views.QuestionsView,basename='question')
 router.register('userquestion',views.UserQuestionsView,basename='userquestion')
+router.register('answer',views.AnswerView,basename='answer')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

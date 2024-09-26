@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from datetime import date
 
 # Create your models here.
 
@@ -15,13 +14,9 @@ class Questions(models.Model):
     
     @property
     def qus_ans(self):
-        ans=Answers.objects.filter(question=self).values_list('id','answer','user__username','datetime')
-        if ans:
-            return list(ans)
-            # formatted_answers = [(a[0], a[1], a[2], a[3].date()) for a in ans]
-            # return formatted_answers
-        else:
-            return 'No Answer'
+        ans=self.answers_set.all()
+        return ans
+    
 
 class Answers(models.Model):
     answer=models.CharField(max_length=1000)
@@ -29,4 +24,16 @@ class Answers(models.Model):
     question=models.ForeignKey(Questions,on_delete=models.CASCADE)
     datetime=models.DateTimeField(auto_now_add=True)
     upvote=models.ManyToManyField(User,related_name='upvoters')
+    
+    def __str__(self) :
+        return self.answer
+    
+    @property
+    def upvote_count(self):
+        count_upvote=self.upvote.all()
+        if count_upvote:
+            return count_upvote.count()
+        else:
+            return 0
+    
     
